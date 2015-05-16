@@ -73,7 +73,7 @@
 
 #define WAIT_US			200
 #define DELTA 			msecs_to_jiffies(500)
-#define FREQ_TABLE_ENTRY	(7)
+#define FREQ_TABLE_ENTRY	(3)
 #define DELAY_TIME		(40*HZ)
 
 DECLARE_PER_CPU(struct cpufreq_policy *, cpufreq_cpu_data);
@@ -108,12 +108,8 @@ struct sprd_dvfs_table {
 };
 
 static struct sprd_dvfs_table sc8825g_dvfs_table[] = {
-	[0] = { 1400000 , 1400000 }, /* 1400,000KHz, 1400mv */
-	[1] = { 1200000 , 1300000 }, /* 1200,000KHz, 1300mv */
-        [2] = { 1000000 , 1200000 }, /* 1000,000KHz, 1200mv */
-        [3] = {  800000 , 1160000 }, /* 800,000KHz,  1160mv */
-        [4] = {  600000 , 1120000 }, /* 600,000KHz,  1120mv */
-        [5] = {  400000 , 1075000 }, /* 400,000KHz,  1075mv */
+	[0] = { 1000000 , 1200000 }, /* 1000,000KHz,  1200mv */
+	[1] = {  500000 , 1100000 }, /* 500,000KHz,  1100mv */
 };
 
 static struct sprd_dvfs_table sc8825g_plus_dvfs_table[] = {
@@ -465,7 +461,7 @@ static unsigned int get_mcu_clk_freq(u32 cpu)
 
 static int set_mcu_freq(int cpu, unsigned long mcu_freq_khz){
 	int ret = 0;
-	unsigned long freq_mcu_hz = mcu_freq_khz * 1024;
+	unsigned long freq_mcu_hz = mcu_freq_khz * 1000;
 #if 0
 	struct clk *clk = scalable_sc8825[cpu].clk;
 	set_mcu_clk_parent(cpu, MCU_CLK_PARENT_384M);
@@ -631,8 +627,8 @@ static int sc8825_is_plus(int cpu){
 	/*
 	 * sc8825+ runs at 1.2GHz
 	 */
-	/*if(cpu_clk == 1200000000)
-		sc8825_is_plus =  1;*/
+	if(cpu_clk == 1200000000)
+		sc8825_is_plus =  1;
 
 	return sc8825_is_plus;
 }
@@ -690,7 +686,7 @@ static unsigned int sprd_cpufreq_get_speed(unsigned int cpu)
 {
 #if 0
 #ifdef CONFIG_CPU_FREQ_MPLL
-	return cpu_clk_get_rate(cpu) / 1024;
+	return cpu_clk_get_rate(cpu) / 1000;
 #else
 	if(current_cfg.clk_mcu_mhz!=0){
 		return current_cfg.clk_mcu_mhz/1000;
@@ -795,8 +791,8 @@ static int sprd_cpufreq_driver_init(struct cpufreq_policy *policy)
 		return -ENODEV;
 	}
 
-	policy->cur = cpu_clk_get_rate(policy->cpu) / 1024; /* current cpu frequency : KHz*/
-	policy->cpuinfo.transition_latency = 1 * 1024 * 1024;//why this value??
+	policy->cur = cpu_clk_get_rate(policy->cpu) / 1000; /* current cpu frequency : KHz*/
+	policy->cpuinfo.transition_latency = 1 * 1000 * 1000;//why this value??
 	current_cfg.clk_mcu_mhz = policy->cur;
 
 #ifdef CONFIG_CPU_FREQ_STAT_DETAILS
