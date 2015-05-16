@@ -796,7 +796,7 @@ static int sprd_cpufreq_driver_init(struct cpufreq_policy *policy)
 	}
 
 	policy->cur = cpu_clk_get_rate(policy->cpu) / 1024; /* current cpu frequency : KHz*/
-	policy->cpuinfo.transition_latency = 1 * 1024 * 10024;//why this value??
+	policy->cpuinfo.transition_latency = 1 * 1024 * 1024;//why this value??
 	current_cfg.clk_mcu_mhz = policy->cur;
 
 #ifdef CONFIG_CPU_FREQ_STAT_DETAILS
