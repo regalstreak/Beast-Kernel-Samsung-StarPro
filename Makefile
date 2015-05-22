@@ -16,7 +16,7 @@
 VERSION = 3
 PATCHLEVEL = 0
 SUBLEVEL = 8
-EXTRAVERSION = -Beast-v2-Neil-Agarwal
+EXTRAVERSION = -Beast-v2.1-Neil-Agarwal
 NAME = Sneaky Weasel
 
 # *DOCUMENTATION*
